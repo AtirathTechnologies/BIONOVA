@@ -1,0 +1,37 @@
+package com.cbg.controller;
+
+import com.cbg.entity.PlantMaster;
+import com.cbg.repository.PlantRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+public class PlantController {
+
+    @Autowired
+    private PlantRepository plantRepository;
+
+    @GetMapping("/plants")
+    public List<PlantMaster> getPlants() {
+        return plantRepository.findAll();
+    }
+
+    @PostMapping("/plants")
+    public ResponseEntity<PlantMaster> savePlant(@RequestBody PlantMaster plant) {
+        if (plant.getPltCd() == null || plant.getPltCd().trim().isEmpty()) {
+            plant.setPltCd("PLT-" + (int)(Math.random() * 900 + 100));
+        }
+        PlantMaster savedPlant = plantRepository.save(plant);
+        return ResponseEntity.ok(savedPlant);
+    }
+
+    @DeleteMapping("/plants/{id}")
+    public ResponseEntity<Void> deletePlant(@PathVariable("id") Long id) {
+        plantRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+}
