@@ -12,6 +12,7 @@ import java.time.LocalDate;
     name = "employee_password_master",
     pkJoinColumns = @PrimaryKeyJoinColumn(name = "emp_id", referencedColumnName = "emp_id")
 )
+@org.hibernate.annotations.Check(constraints = "gender IN ('MALE','FEMALE','OTHER') AND bld_grp IN ('A+','A-','B+','B-','AB+','AB-','O+','O-','Bombay','RH-Null') AND emp_typ IN ('RET','FTE','CON')")
 @Getter
 @Setter
 public class Employee {
@@ -32,7 +33,7 @@ public class Employee {
     @Column(name = "lst_nm", length = 50)
     private String lastName;
 
-    @Column(name = "gender", columnDefinition = "VARCHAR(10) CHECK (gender IN ('MALE','FEMALE','OTHER'))")
+    @Column(name = "gender", length = 10)
     private String gender;
 
     @Column(name = "dob", nullable = false)
@@ -44,7 +45,7 @@ public class Employee {
     @Column(name = "mob_num", unique = true, length = 15)
     private String mobNum;
 
-    @Column(name = "bld_grp", columnDefinition = "VARCHAR(5) CHECK (bld_grp IN ('A+','A-','B+','B-','AB+','AB-','O+','O-','Bombay','RH-Null'))")
+    @Column(name = "bld_grp", length = 10)
     private String bldGrp;
 
     @Column(name = "address", nullable = false, length = 255)
@@ -56,10 +57,7 @@ public class Employee {
     @Column(name = "doj")
     private LocalDate doj;
 
-    @Column(
-            name = "emp_typ",
-            columnDefinition = "VARCHAR(10) CHECK (emp_typ IN ('RET','FTE','CON'))"
-    )
+    @Column(name = "emp_typ", length = 10)
     private String empTyp;
 
     @Column(name = "desig_id")

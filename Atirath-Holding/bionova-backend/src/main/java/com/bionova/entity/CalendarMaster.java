@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "calendar_master")
+@org.hibernate.annotations.Check(constraints = "hol_typ IN ('MANDATORY','OPTIONAL')")
 @Getter
 @Setter
 public class CalendarMaster {
@@ -32,12 +33,12 @@ public class CalendarMaster {
     @Column(name = "plt_id")
     private Integer pltId;
 
-    @Column(name = "hol_typ", columnDefinition = "VARCHAR(10) CHECK (hol_typ IN ('MANDATORY','OPTIONAL'))")
+    @Column(name = "hol_typ", length = 10)
     private String holTyp;
 
     @Column(name = "addl_rem", length = 255)
     private String addlRem;
 
-    @Column(name = "sts", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "sts")
     private Boolean sts = true;
 }

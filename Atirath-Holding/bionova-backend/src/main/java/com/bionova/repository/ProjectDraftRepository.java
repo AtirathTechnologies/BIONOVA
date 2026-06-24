@@ -14,4 +14,7 @@ public interface ProjectDraftRepository extends JpaRepository<ProjectDraft, Long
     List<ProjectDraft> findByPltId(Integer pltId);
 
     List<ProjectDraft> findByCoyIdAndPltId(Integer coyId, Integer pltId);
+
+    boolean existsByPrjCd(String prjCd);
+    boolean existsByPrjCdAndDrftPrjIdNot(String prjCd, Long drftPrjId);
 }

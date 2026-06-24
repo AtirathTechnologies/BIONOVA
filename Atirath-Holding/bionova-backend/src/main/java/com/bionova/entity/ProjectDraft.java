@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "project_draft_master")
+@org.hibernate.annotations.Check(constraints = "prj_prty IN ('HIGH','MEDIUM','NORMAL','LOW') AND prj_sts IN ('DRAFT')")
 @Getter
 @Setter
 public class ProjectDraft {
@@ -29,10 +30,10 @@ public class ProjectDraft {
     @Column(name = "dept_id")
     private Integer deptId;
 
-    @Column(name = "prj_prty", columnDefinition = "VARCHAR(10) CHECK (prj_prty IN ('HIGH','MEDIUM','NORMAL','LOW'))")
+    @Column(name = "prj_prty", length = 10)
     private String prjPrty;
 
-    @Column(name = "prj_sts", columnDefinition = "VARCHAR(20) CHECK (prj_sts IN ('DRAFT'))")
+    @Column(name = "prj_sts", length = 20)
     private String prjSts;
 
     @Column(name = "tent_st_dt", nullable = false)

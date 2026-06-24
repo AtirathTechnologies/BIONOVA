@@ -36,8 +36,8 @@ public class Landmaster {
     @Column(name = "land_size", precision = 12, scale = 2)
     private BigDecimal landSize;
 
-    @Column(name = "alc_typ", length = 3)
-    private String alcTyp;
+    @Column(name = "alloted_for", length = 3)
+    private String AllotedFor;
 
     @Column(name = "vlg", length = 50)
     private String vlg;

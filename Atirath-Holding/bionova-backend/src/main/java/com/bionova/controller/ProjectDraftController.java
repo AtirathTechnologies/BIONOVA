@@ -16,6 +16,12 @@ public class ProjectDraftController {
     @Autowired
     private ProjectDraftRepository projectDraftRepository;
 
+    @Autowired
+    private com.bionova.repository.MilestoneDraftRepository milestoneDraftRepository;
+
+    @Autowired
+    private com.bionova.repository.TaskDraftRepository taskDraftRepository;
+
     /** GET all drafts */
     @GetMapping
     public List<ProjectDraft> getAll() {
@@ -24,7 +30,7 @@ public class ProjectDraftController {
 
     /** GET by ID */
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectDraft> getById(@PathVariable Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         return projectDraftRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -46,7 +52,13 @@ public class ProjectDraftController {
 
     /** POST – create new draft (auto-computes no_of_days, sets status DRAFT) */
     @PostMapping
-    public ResponseEntity<ProjectDraft> create(@RequestBody ProjectDraft draft) {
+    public ResponseEntity<?> create(@RequestBody ProjectDraft draft) {
+        if (draft.getPrjCd() != null && !draft.getPrjCd().trim().isEmpty()) {
+            if (projectDraftRepository.existsByPrjCd(draft.getPrjCd())) {
+                return ResponseEntity.badRequest().body(java.util.Map.of("message", "Project code already exists."));
+            }
+        }
+
         draft.setPrjSts("DRAFT");
 
         // Auto-compute tentative days
@@ -61,14 +73,20 @@ public class ProjectDraftController {
 
     /** PUT – update draft */
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDraft> update(
+    public ResponseEntity<?> update(
             @PathVariable Long id,
             @RequestBody ProjectDraft details) {
 
         ProjectDraft draft = projectDraftRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Draft not found: " + id));
 
-        draft.setPrjCd(details.getPrjCd());
+        if (details.getPrjCd() != null && !details.getPrjCd().trim().isEmpty()) {
+            if (projectDraftRepository.existsByPrjCdAndDrftPrjIdNot(details.getPrjCd(), id)) {
+                return ResponseEntity.badRequest().body(java.util.Map.of("message", "Project code already exists."));
+            }
+            draft.setPrjCd(details.getPrjCd());
+        }
+
         draft.setPrjNm(details.getPrjNm());
         draft.setPrjDesc(details.getPrjDesc());
         draft.setDeptId(details.getDeptId());
@@ -88,7 +106,44 @@ public class ProjectDraftController {
             draft.setNoOfDays((int) days);
         }
 
-        return ResponseEntity.ok(projectDraftRepository.save(draft));
+        ProjectDraft saved = projectDraftRepository.save(draft);
+
+        // Validate if any milestones or tasks exceed new project limits
+        String warning = null;
+        List<com.bionova.entity.MilestoneDraft> milestones = milestoneDraftRepository.findByDrftPrjId(id);
+        for (com.bionova.entity.MilestoneDraft milestone : milestones) {
+            if (milestone.getTentStDt() != null && milestone.getTentEndDt() != null) {
+                if (milestone.getTentStDt().isBefore(saved.getTentStDt()) ||
+                    milestone.getTentEndDt().isAfter(saved.getTentEndDt()) ||
+                    (milestone.getMlstnDays() != null && saved.getNoOfDays() != null && milestone.getMlstnDays() > saved.getNoOfDays())) {
+                    warning = "Warning: Some milestones or tasks now exceed the updated project limits. Please review and update them accordingly.";
+                    break;
+                }
+            }
+            
+            // Check tasks of this milestone
+            List<com.bionova.entity.TaskDraft> tasks = taskDraftRepository.findByDrftMId(milestone.getDrftMId());
+            for (com.bionova.entity.TaskDraft task : tasks) {
+                if (task.getTentStDt() != null && task.getTentEndDt() != null) {
+                    if (task.getTentStDt().isBefore(saved.getTentStDt()) ||
+                        task.getTentEndDt().isAfter(saved.getTentEndDt()) ||
+                        (task.getNoOfDays() != null && saved.getNoOfDays() != null && task.getNoOfDays() > saved.getNoOfDays())) {
+                        warning = "Warning: Some milestones or tasks now exceed the updated project limits. Please review and update them accordingly.";
+                        break;
+                    }
+                }
+            }
+            if (warning != null) {
+                break;
+            }
+        }
+
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("data", saved);
+        if (warning != null) {
+            response.put("warning", warning);
+        }
+        return ResponseEntity.ok(response);
     }
 
     /** DELETE */
