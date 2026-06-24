@@ -67,6 +67,9 @@ public class CompanyMaster {
     @Column(name = "pin", length = 6)
     private String pin;
 
+    @Column(name = "wrk_days_per_wk")
+    private Integer wrkDaysPerWk;
+
     @Column(name = "addl_rem", length = 255)
     private String addlRem;
 

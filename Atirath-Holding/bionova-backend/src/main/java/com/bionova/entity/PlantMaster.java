@@ -46,6 +46,9 @@ public class PlantMaster {
     @Column(name = "pin", length = 6)
     private String pin;
 
+    @Column(name = "wrk_days_per_wk")
+    private Integer wrkDaysPerWk;
+
     @Column(name = "lat", precision = 10, scale = 8)
     private BigDecimal lat;
 

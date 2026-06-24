@@ -48,6 +48,7 @@ public class PlantController {
         plant.setStId(details.getStId());
         plant.setZnNm(details.getZnNm());
         plant.setPin(details.getPin());
+        plant.setWrkDaysPerWk(details.getWrkDaysPerWk());
         plant.setLat(details.getLat());
         plant.setLongt(details.getLongt());
         plant.setAddlRem(details.getAddlRem());

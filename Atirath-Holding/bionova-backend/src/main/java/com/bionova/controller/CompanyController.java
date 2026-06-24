@@ -54,6 +54,7 @@ public class CompanyController {
         company.setStId(details.getStId());
         company.setZnNm(details.getZnNm());
         company.setPin(details.getPin());
+        company.setWrkDaysPerWk(details.getWrkDaysPerWk());
         company.setAddlRem(details.getAddlRem());
         company.setSts(details.getSts());
         CompanyMaster saved = companyRepository.save(company);
