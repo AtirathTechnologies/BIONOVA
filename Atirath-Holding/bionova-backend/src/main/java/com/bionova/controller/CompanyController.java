@@ -28,15 +28,58 @@ public class CompanyController {
     }
 
     @PostMapping("/companies")
-    public ResponseEntity<CompanyMaster> saveCompany(@RequestBody CompanyMaster company) {
+    public ResponseEntity<?> saveCompany(@RequestBody CompanyMaster company) {
+        if (company.getCoyCd() != null && companyRepository.existsByCoyCd(company.getCoyCd())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Company code already exists."));
+        }
+        if (company.getPanNum() != null && companyRepository.existsByPanNum(company.getPanNum())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "PAN number already exists."));
+        }
+        if (company.getTanNum() != null && companyRepository.existsByTanNum(company.getTanNum())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "TAN number already exists."));
+        }
+        if (company.getGstNum() != null && !company.getGstNum().trim().isEmpty() && companyRepository.existsByGstNum(company.getGstNum())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "GST number already exists."));
+        }
+        if (company.getCin() != null && companyRepository.existsByCin(company.getCin())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "CIN already exists."));
+        }
+
+        if (company.getStId() != null) {
+            stateRepository.findById(company.getStId()).ifPresent(state -> {
+                company.setZnNm(state.getZnNm());
+            });
+        }
+
+        if (company.getZnNm() == null || company.getZnNm().trim().isEmpty()) {
+            company.setZnNm("SOUTH");
+        }
+
         CompanyMaster saved = companyRepository.save(company);
         return ResponseEntity.ok(saved);
     }
 
     @PutMapping("/companies/{id}")
-    public ResponseEntity<CompanyMaster> updateCompany(@PathVariable Long id, @RequestBody CompanyMaster details) {
+    public ResponseEntity<?> updateCompany(@PathVariable Long id, @RequestBody CompanyMaster details) {
         CompanyMaster company = companyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        if (details.getCoyCd() != null && companyRepository.existsByCoyCdAndCoyIdNot(details.getCoyCd(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Company code already exists."));
+        }
+        if (details.getPanNum() != null && companyRepository.existsByPanNumAndCoyIdNot(details.getPanNum(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "PAN number already exists."));
+        }
+        if (details.getTanNum() != null && companyRepository.existsByTanNumAndCoyIdNot(details.getTanNum(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "TAN number already exists."));
+        }
+        if (details.getGstNum() != null && !details.getGstNum().trim().isEmpty() && companyRepository.existsByGstNumAndCoyIdNot(details.getGstNum(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "GST number already exists."));
+        }
+        if (details.getCin() != null && companyRepository.existsByCinAndCoyIdNot(details.getCin(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "CIN already exists."));
+        }
+
         company.setCoyCd(details.getCoyCd());
         company.setCoyNm(details.getCoyNm());
         company.setPrntCoyId(details.getPrntCoyId());
@@ -52,7 +95,19 @@ public class CompanyController {
         company.setCtVlg(details.getCtVlg());
         company.setDist(details.getDist());
         company.setStId(details.getStId());
-        company.setZnNm(details.getZnNm());
+
+        if (details.getStId() != null) {
+            stateRepository.findById(details.getStId()).ifPresent(state -> {
+                company.setZnNm(state.getZnNm());
+            });
+        } else {
+            company.setZnNm(details.getZnNm());
+        }
+
+        if (company.getZnNm() == null || company.getZnNm().trim().isEmpty()) {
+            company.setZnNm("SOUTH");
+        }
+
         company.setPin(details.getPin());
         company.setWrkDaysPerWk(details.getWrkDaysPerWk());
         company.setAddlRem(details.getAddlRem());

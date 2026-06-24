@@ -21,9 +21,19 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees")
-    public ResponseEntity<Employee> saveEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<?> saveEmployee(@RequestBody Employee employee) {
 
         System.out.println("EMPLOYEE POST API HIT");
+
+        if (employee.getEmpCode() != null && !employee.getEmpCode().trim().isEmpty() && employeeRepository.existsByEmpCode(employee.getEmpCode())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Employee code already exists."));
+        }
+        if (employee.getEmail() != null && !employee.getEmail().trim().isEmpty() && employeeRepository.existsByEmail(employee.getEmail())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Employee email already exists."));
+        }
+        if (employee.getMobNum() != null && !employee.getMobNum().trim().isEmpty() && employeeRepository.existsByMobNum(employee.getMobNum())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Employee mobile number already exists."));
+        }
 
         if (employee.getRole() == null || employee.getRole().isEmpty()) {
             employee.setRole("user");
@@ -40,9 +50,19 @@ public class EmployeeController {
         return ResponseEntity.ok(saved);
     }
     @PutMapping("/employees/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
+    public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+
+        if (employeeDetails.getEmpCode() != null && !employeeDetails.getEmpCode().trim().isEmpty() && employeeRepository.existsByEmpCodeAndEmpIdNot(employeeDetails.getEmpCode(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Employee code already exists."));
+        }
+        if (employeeDetails.getEmail() != null && !employeeDetails.getEmail().trim().isEmpty() && employeeRepository.existsByEmailAndEmpIdNot(employeeDetails.getEmail(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Employee email already exists."));
+        }
+        if (employeeDetails.getMobNum() != null && !employeeDetails.getMobNum().trim().isEmpty() && employeeRepository.existsByMobNumAndEmpIdNot(employeeDetails.getMobNum(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Employee mobile number already exists."));
+        }
 
         employee.setEmpCode(employeeDetails.getEmpCode());
         employee.setFirstName(employeeDetails.getFirstName());

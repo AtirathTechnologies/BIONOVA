@@ -11,4 +11,8 @@ public interface PlantRepository
         extends JpaRepository<PlantMaster, Long> {
 
     List<PlantMaster> findByCoyId(Long coyId);
+
+    boolean existsByPltCd(String pltCd);
+
+    boolean existsByPltCdAndPltIdNot(String pltCd, Long pltId);
 }

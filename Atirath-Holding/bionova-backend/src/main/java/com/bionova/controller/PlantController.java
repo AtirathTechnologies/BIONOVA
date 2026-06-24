@@ -15,6 +15,9 @@ public class PlantController {
     @Autowired
     private PlantRepository plantRepository;
 
+    @Autowired
+    private com.bionova.repository.StateRepository stateRepository;
+
     @GetMapping("/plants")
     public List<PlantMaster> getPlants() {
         return plantRepository.findAll();
@@ -26,19 +29,41 @@ public class PlantController {
     }
 
     @PostMapping("/plants")
-    public ResponseEntity<PlantMaster> savePlant(@RequestBody PlantMaster plant) {
-        if (plant.getPltCd() == null || plant.getPltCd().trim().isEmpty()) {
+    public ResponseEntity<?> savePlant(@RequestBody PlantMaster plant) {
+        if (plant.getPltCd() != null && !plant.getPltCd().trim().isEmpty()) {
+            if (plantRepository.existsByPltCd(plant.getPltCd())) {
+                return ResponseEntity.badRequest().body(java.util.Map.of("message", "Plant code already exists."));
+            }
+        } else {
             plant.setPltCd("PLT-" + (int)(Math.random() * 900 + 100));
         }
+
+        if (plant.getStId() != null) {
+            stateRepository.findById(plant.getStId()).ifPresent(state -> {
+                plant.setZnNm(state.getZnNm());
+            });
+        }
+
+        if (plant.getZnNm() == null || plant.getZnNm().trim().isEmpty()) {
+            plant.setZnNm("SOUTH");
+        }
+
         PlantMaster savedPlant = plantRepository.save(plant);
         return ResponseEntity.ok(savedPlant);
     }
 
     @PutMapping("/plants/{id}")
-    public ResponseEntity<PlantMaster> updatePlant(@PathVariable Long id, @RequestBody PlantMaster details) {
+    public ResponseEntity<?> updatePlant(@PathVariable Long id, @RequestBody PlantMaster details) {
         PlantMaster plant = plantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plant not found"));
-        plant.setPltCd(details.getPltCd());
+
+        if (details.getPltCd() != null && !details.getPltCd().trim().isEmpty()) {
+            if (plantRepository.existsByPltCdAndPltIdNot(details.getPltCd(), id)) {
+                return ResponseEntity.badRequest().body(java.util.Map.of("message", "Plant code already exists."));
+            }
+            plant.setPltCd(details.getPltCd());
+        }
+
         plant.setCoyId(details.getCoyId());
         plant.setPltNm(details.getPltNm());
         plant.setCap(details.getCap());
@@ -46,7 +71,19 @@ public class PlantController {
         plant.setAddr(details.getAddr());
         plant.setDist(details.getDist());
         plant.setStId(details.getStId());
-        plant.setZnNm(details.getZnNm());
+
+        if (details.getStId() != null) {
+            stateRepository.findById(details.getStId()).ifPresent(state -> {
+                plant.setZnNm(state.getZnNm());
+            });
+        } else {
+            plant.setZnNm(details.getZnNm());
+        }
+
+        if (plant.getZnNm() == null || plant.getZnNm().trim().isEmpty()) {
+            plant.setZnNm("SOUTH");
+        }
+
         plant.setPin(details.getPin());
         plant.setWrkDaysPerWk(details.getWrkDaysPerWk());
         plant.setLat(details.getLat());

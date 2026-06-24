@@ -24,9 +24,11 @@ public class Employee {
     @Column(name = "emp_code", unique = true, length = 10)
     private String empCode;
 
+    @JsonProperty("fstNm")
     @Column(name = "fst_nm", nullable = false, length = 50)
     private String firstName;
 
+    @JsonProperty("lstNm")
     @Column(name = "lst_nm", length = 50)
     private String lastName;
 
@@ -72,12 +74,14 @@ public class Employee {
     @Column(name = "dept_id")
     private Integer deptId;
 
+    @JsonProperty("wLoc")
     @Column(name = "w_loc", nullable = false, length = 100)
     private String wLoc;
 
     @Column(name = "rep_man_id")
     private Integer repManId;
 
+    @JsonProperty("sts")
     @Column(name = "sts")
     private Boolean status;
 
