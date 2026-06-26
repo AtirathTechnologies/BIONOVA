@@ -15,4 +15,7 @@ public interface TaskLiveRepository extends JpaRepository<TaskLive, Long> {
     List<TaskLive> findByMilestoneId(@Param("mId") Long mId);
 
     boolean existsByTaskCd(String taskCd);
+
+    @Query("SELECT COUNT(t) > 0 FROM TaskLive t WHERE t.taskCd = :taskCd AND t.taskId <> :taskId")
+    boolean existsByTaskCdAndTaskIdNot(@Param("taskCd") String taskCd, @Param("taskId") Long taskId);
 }

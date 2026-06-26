@@ -2,6 +2,7 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\Bionova
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\DataInitializer.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\SecurityConfig.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\SwaggerConfig.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\AdminDashboardController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\AttachmentController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\AuthController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\CalendarMasterController.java
@@ -9,8 +10,11 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\control
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\CompanyController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\DepartmentController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\EmployeeController.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\EmployeeIndividualTaskController.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\ExternalEmployeeController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\LandmasterController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\MilestoneDraftController.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\MilestoneLiveController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\PlantController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\ProcessConfigController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\ProcessController.java
@@ -18,7 +22,9 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\control
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\ProjectLiveController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\ReviewerMasterController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\TaskDraftController.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\TaskLiveController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\TestController.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\dto\AdminDashboardResponse.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\dto\ForgotPasswordRequest.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\dto\LoginRequest.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\dto\LoginResponse.java
@@ -30,6 +36,8 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\CompanyMaster.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\DepartmentMaster.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\Employee.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\EmployeeIndividualTask.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\ExternalEmployee.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\Landmaster.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\MilestoneDraft.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\MilestoneLive.java
@@ -48,7 +56,9 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\reposit
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\ChecklistMasterRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\CompanyRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\DepartmentRepository.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\EmployeeIndividualTaskRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\EmployeeRepository.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\ExternalEmployeeRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\LandmasterRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\MilestoneDraftRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\MilestoneLiveRepository.java
@@ -64,6 +74,7 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\reposit
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\TaskLiveRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\security\JwtAuthFilter.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\security\JwtUtil.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\AdminDashboardService.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\AuthService.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\CalendarService.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\PasswordResetService.java
