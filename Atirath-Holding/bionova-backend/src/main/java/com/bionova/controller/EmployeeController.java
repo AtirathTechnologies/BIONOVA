@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -36,6 +37,22 @@ public class EmployeeController {
         String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         return employeeRepository.findByEmail(email)
                 .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/employees/fcm-token")
+    public ResponseEntity<?> updateFcmToken(@RequestBody Map<String, String> body) {
+        String token = body.get("token");
+        if (token == null || token.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "FCM token is required"));
+        }
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        return employeeRepository.findByEmail(email)
+                .map(employee -> {
+                    employee.setFcmToken(token);
+                    employeeRepository.save(employee);
+                    return ResponseEntity.ok(Map.of("message", "FCM token registered successfully"));
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 

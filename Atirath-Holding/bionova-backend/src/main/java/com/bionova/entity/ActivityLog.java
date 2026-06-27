@@ -31,4 +31,7 @@ public class ActivityLog {
 
     @Column(name = "log_dt", nullable = false)
     private LocalDateTime logDt = LocalDateTime.now();
+
+    @Column(name = "processed", nullable = false, columnDefinition = "boolean default false")
+    private Boolean processed = false;
 }

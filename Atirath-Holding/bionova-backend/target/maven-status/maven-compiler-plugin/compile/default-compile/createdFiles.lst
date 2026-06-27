@@ -5,6 +5,7 @@ com\bionova\service\CalendarService.class
 com\bionova\controller\EmployeeController.class
 com\bionova\repository\MilestoneLiveRepository.class
 com\bionova\service\PasswordResetService.class
+com\bionova\controller\AppNotificationController.class
 com\bionova\controller\ProcessConfigController.class
 com\bionova\service\ProjectDashboardService.class
 com\bionova\entity\TaskDraft.class
@@ -32,6 +33,7 @@ com\bionova\service\CalendarService$HolidaySummary.class
 com\bionova\entity\DepartmentMaster.class
 com\bionova\controller\TaskLiveController.class
 com\bionova\repository\PlantRepository.class
+com\bionova\repository\AppNotificationRepository.class
 com\bionova\entity\Landmaster.class
 com\bionova\controller\AdminDashboardController.class
 com\bionova\entity\EmployeeIndividualTask.class
@@ -60,8 +62,10 @@ com\bionova\entity\ProcessConfig.class
 com\bionova\dto\AdminDashboardResponse$ProjectProgressDto$ProjectProgressDtoBuilder.class
 com\bionova\entity\ReviewerMaster.class
 com\bionova\service\AdminDashboardService.class
+com\bionova\entity\AppNotification.class
 com\bionova\dto\AdminDashboardResponse$ProjectProgressDto.class
 com\bionova\repository\TaskDraftRepository.class
+com\bionova\service\NotificationService.class
 com\bionova\controller\AttachmentController.class
 com\bionova\dto\LoginResponse.class
 com\bionova\controller\ReviewerMasterController.class

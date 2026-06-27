@@ -83,6 +83,9 @@ public class Employee {
     @Column(name = "sts")
     private Boolean status;
 
+    @Column(name = "fcm_token", length = 255)
+    private String fcmToken;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "emp_password", table = "employee_password_master", nullable = false, length = 100)
     private String password;

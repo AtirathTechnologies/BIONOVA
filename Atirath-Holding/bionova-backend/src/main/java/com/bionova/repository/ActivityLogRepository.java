@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> {
     List<ActivityLog> findByEntityTypAndEntityId(String entityTyp, Long entityId);
+    List<ActivityLog> findByProcessedFalse();
 }
