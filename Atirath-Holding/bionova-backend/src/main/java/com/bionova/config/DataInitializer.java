@@ -43,9 +43,9 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Admin user siva@atirath.com not found. Creating...");
             // Insert into employee_master
             jdbcTemplate.update(
-                "INSERT INTO employee_master (emp_code, fst_nm, lst_nm, gender, dob, email, mob_num, bld_grp, address, w_loc, sts, role) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                "EMP01", "Siva", "Kumar", "MALE", java.sql.Date.valueOf("1990-01-01"), "siva@atirath.com", "9999999999", "O+", "Atirath Office", "Office", true, "admin"
+                "INSERT INTO employee_master (emp_code, fst_nm, lst_nm, gender, dob, email, mob_num, bld_grp, address, w_loc, sts) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "EMP01", "Siva", "Kumar", "MALE", java.sql.Date.valueOf("1990-01-01"), "siva@atirath.com", "9999999999", "O+", "Atirath Office", "Office", true
             );
 
             // Get generated emp_id
@@ -68,6 +68,64 @@ public class DataInitializer implements CommandLineRunner {
                 hashed, "siva@atirath.com"
             );
             System.out.println("Admin password refreshed successfully.");
+        }
+
+        // 3. Initialize PostgreSQL triggers for automatic status change logging (database level + application level)
+        System.out.println("Initializing status change triggers in PostgreSQL...");
+        try {
+            jdbcTemplate.execute(
+                "CREATE OR REPLACE FUNCTION log_status_change_trigger() " +
+                "RETURNS TRIGGER AS $$ " +
+                "BEGIN " +
+                "    IF (TG_OP = 'UPDATE') THEN " +
+                "        IF (TG_TABLE_NAME = 'task_live_master') THEN " +
+                "            IF (OLD.task_sts IS DISTINCT FROM NEW.task_sts) THEN " +
+                "                INSERT INTO activity_log_transaction (entity_typ, entity_id, status_from, status_to, log_dt) " +
+                "                VALUES ('TASK', OLD.task_id, COALESCE(OLD.task_sts, 'N/A'), NEW.task_sts, CURRENT_TIMESTAMP); " +
+                "            END IF; " +
+                "        ELSIF (TG_TABLE_NAME = 'milestone_live_master') THEN " +
+                "            IF (OLD.mlstn_sts IS DISTINCT FROM NEW.mlstn_sts) THEN " +
+                "                INSERT INTO activity_log_transaction (entity_typ, entity_id, status_from, status_to, log_dt) " +
+                "                VALUES ('MILESTONE', OLD.m_id, COALESCE(OLD.mlstn_sts, 'N/A'), NEW.mlstn_sts, CURRENT_TIMESTAMP); " +
+                "            END IF; " +
+                "        ELSIF (TG_TABLE_NAME = 'project_live_master') THEN " +
+                "            IF (OLD.prj_sts IS DISTINCT FROM NEW.prj_sts) THEN " +
+                "                INSERT INTO activity_log_transaction (entity_typ, entity_id, status_from, status_to, log_dt) " +
+                "                VALUES ('PROJECT', OLD.prj_id, COALESCE(OLD.prj_sts, 'N/A'), NEW.prj_sts, CURRENT_TIMESTAMP); " +
+                "            END IF; " +
+                "        END IF; " +
+                "    END IF; " +
+                "    RETURN NEW; " +
+                "END; " +
+                "$$ LANGUAGE plpgsql;"
+            );
+
+            jdbcTemplate.execute(
+                "DROP TRIGGER IF EXISTS trigger_log_project_status ON project_live_master; " +
+                "CREATE TRIGGER trigger_log_project_status " +
+                "AFTER UPDATE ON project_live_master " +
+                "FOR EACH ROW " +
+                "EXECUTE FUNCTION log_status_change_trigger();"
+            );
+
+            jdbcTemplate.execute(
+                "DROP TRIGGER IF EXISTS trigger_log_milestone_status ON milestone_live_master; " +
+                "CREATE TRIGGER trigger_log_milestone_status " +
+                "AFTER UPDATE ON milestone_live_master " +
+                "FOR EACH ROW " +
+                "EXECUTE FUNCTION log_status_change_trigger();"
+            );
+
+            jdbcTemplate.execute(
+                "DROP TRIGGER IF EXISTS trigger_log_task_status ON task_live_master; " +
+                "CREATE TRIGGER trigger_log_task_status " +
+                "AFTER UPDATE ON task_live_master " +
+                "FOR EACH ROW " +
+                "EXECUTE FUNCTION log_status_change_trigger();"
+            );
+            System.out.println("Status change triggers initialized successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to create status change database triggers: " + e.getMessage());
         }
     }
 }

@@ -23,12 +23,20 @@ public class EmployeeIndividualTaskController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    private boolean isAdminOrManager(Employee employee) {
+        if (employee == null) {
+            return false;
+        }
+        // Since role column is removed, we treat siva@atirath.com as admin
+        return "siva@atirath.com".equalsIgnoreCase(employee.getEmail());
+    }
+
     @GetMapping
     public List<EmployeeIndividualTask> getAllTasks() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return employeeRepository.findByEmail(email)
                 .map(employee -> {
-                    if ("admin".equalsIgnoreCase(employee.getRole()) || "manager".equalsIgnoreCase(employee.getRole())) {
+                    if (isAdminOrManager(employee)) {
                         return repository.findAll();
                     } else {
                         return repository.findByAssignedTo(employee.getEmpId());
@@ -47,8 +55,7 @@ public class EmployeeIndividualTaskController {
 
         return repository.findById(id)
                 .map(task -> {
-                    if ("admin".equalsIgnoreCase(employee.getRole()) || 
-                        "manager".equalsIgnoreCase(employee.getRole()) || 
+                    if (isAdminOrManager(employee) || 
                         employee.getEmpId().equals(task.getAssignedTo()) ||
                         employee.getEmpId().equals(task.getAssignedBy())) {
                         return ResponseEntity.ok(task);

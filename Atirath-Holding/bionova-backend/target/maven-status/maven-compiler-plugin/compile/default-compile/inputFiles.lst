@@ -2,6 +2,7 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\Bionova
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\DataInitializer.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\SecurityConfig.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\SwaggerConfig.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\ActivityLogController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\AdminDashboardController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\AttachmentController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\AuthController.java
@@ -32,6 +33,7 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\dto\Log
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\dto\ProjectDashboardResponse.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\dto\ProjectRequest.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\dto\ResetPasswordRequest.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\ActivityLog.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\AttachmentMaster.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\CalendarMaster.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\ChecklistMaster.java
@@ -53,6 +55,7 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\StateMaster.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\TaskDraft.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\entity\TaskLive.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\ActivityLogRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\AttachmentMasterRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\CalendarMasterRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\ChecklistMasterRepository.java
@@ -76,6 +79,7 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\reposit
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\repository\TaskLiveRepository.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\security\JwtAuthFilter.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\security\JwtUtil.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\ActivityLogService.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\AdminDashboardService.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\AuthService.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\CalendarService.java

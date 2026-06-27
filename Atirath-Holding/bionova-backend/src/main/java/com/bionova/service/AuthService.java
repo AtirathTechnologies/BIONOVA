@@ -47,9 +47,11 @@ public class AuthService {
             return new LoginResponse(false, "Invalid Password", null, null);
         }
 
-        // Generate JWT
-        String token = jwtUtil.generateToken(employee.getEmail(), employee.getRole());
+        String role = "siva@atirath.com".equalsIgnoreCase(employee.getEmail()) ? "admin" : "user";
 
-        return new LoginResponse(true, "Login Success", employee.getRole(), token);
+        // Generate JWT
+        String token = jwtUtil.generateToken(employee.getEmail(), role);
+
+        return new LoginResponse(true, "Login Success", role, token);
     }
 }

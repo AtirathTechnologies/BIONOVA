@@ -8,6 +8,7 @@ import com.bionova.repository.EmployeeRepository;
 import com.bionova.repository.MilestoneLiveRepository;
 import com.bionova.repository.ProjectLiveRepository;
 import com.bionova.repository.TaskLiveRepository;
+import com.bionova.service.ActivityLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +35,23 @@ public class MilestoneLiveController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private ActivityLogService activityLogService;
+
+    private boolean isAdminOrManager(Employee employee) {
+        if (employee == null) {
+            return false;
+        }
+        // Since role column is removed, we treat siva@atirath.com as admin
+        return "siva@atirath.com".equalsIgnoreCase(employee.getEmail());
+    }
+
     @GetMapping
     public List<MilestoneLive> getAll() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return employeeRepository.findByEmail(email)
                 .map(employee -> {
-                    if ("admin".equalsIgnoreCase(employee.getRole()) || "manager".equalsIgnoreCase(employee.getRole())) {
+                    if (isAdminOrManager(employee)) {
                         return milestoneLiveRepository.findAll();
                     } else {
                         return milestoneLiveRepository.findMilestonesByEmpId(employee.getEmpId());
@@ -56,8 +68,7 @@ public class MilestoneLiveController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Unauthorized"));
         }
 
-        if ("admin".equalsIgnoreCase(employee.getRole()) || 
-            "manager".equalsIgnoreCase(employee.getRole()) || 
+        if (isAdminOrManager(employee) || 
             employee.getEmpId().equals(empId)) {
             return ResponseEntity.ok(milestoneLiveRepository.findMilestonesByEmpId(empId));
         } else {

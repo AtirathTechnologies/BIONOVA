@@ -54,9 +54,6 @@ public class EmployeeController {
             return ResponseEntity.badRequest().body(java.util.Map.of("message", "Employee mobile number already exists."));
         }
 
-        if (employee.getRole() == null || employee.getRole().isEmpty()) {
-            employee.setRole("user");
-        }
 
         if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
             employee.setPassword(
@@ -102,9 +99,7 @@ public class EmployeeController {
         employee.setWLoc(employeeDetails.getWLoc());
         employee.setRepManId(employeeDetails.getRepManId());
         employee.setStatus(employeeDetails.getStatus());
-        if (employeeDetails.getRole() != null) {
-            employee.setRole(employeeDetails.getRole());
-        }
+
         if (employeeDetails.getPassword() != null && !employeeDetails.getPassword().isEmpty()) {
             String rawPwd = employeeDetails.getPassword();
             if (!rawPwd.startsWith("$2a$")) {

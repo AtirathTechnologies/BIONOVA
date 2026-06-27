@@ -21,6 +21,7 @@ com\bionova\repository\EmployeeRepository.class
 com\bionova\BionovaBackendApplication.class
 com\bionova\entity\PlantMaster.class
 com\bionova\entity\AttachmentMaster.class
+com\bionova\service\ActivityLogService.class
 com\bionova\entity\ProjectLive.class
 com\bionova\entity\ExternalEmployee.class
 com\bionova\repository\EmployeeIndividualTaskRepository.class
@@ -68,7 +69,9 @@ com\bionova\repository\TaskLiveRepository.class
 com\bionova\dto\AdminDashboardResponse$AdminDashboardResponseBuilder.class
 com\bionova\dto\ProjectDashboardResponse$MilestoneStatus.class
 com\bionova\entity\CalendarMaster.class
+com\bionova\repository\ActivityLogRepository.class
 com\bionova\config\DataInitializer.class
+com\bionova\controller\ActivityLogController.class
 com\bionova\dto\ProjectDashboardResponse$SummaryMetrics.class
 com\bionova\dto\ResetPasswordRequest.class
 com\bionova\entity\ChecklistMaster.class
@@ -91,6 +94,7 @@ com\bionova\dto\ProjectDashboardResponse.class
 com\bionova\entity\CompanyMaster.class
 com\bionova\repository\ProjectDraftRepository.class
 com\bionova\controller\ProcessController.class
+com\bionova\entity\ActivityLog.class
 com\bionova\repository\ReviewerMasterRepository.class
 com\bionova\security\JwtAuthFilter.class
 com\bionova\entity\ProcessMaster.class
