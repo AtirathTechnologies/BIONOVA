@@ -96,6 +96,36 @@ public class EmployeeController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/employees/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> request) {
+        String currentPassword = request.get("currentPassword");
+        String newPassword = request.get("newPassword");
+
+        if (currentPassword == null || currentPassword.isEmpty() || newPassword == null || newPassword.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Current password and new password are required."));
+        }
+
+        if (newPassword.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Password must be at least 8 characters long."));
+        }
+
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        return employeeRepository.findByEmail(email)
+                .map(employee -> {
+                    org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = 
+                            new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+                    
+                    if (!encoder.matches(currentPassword, employee.getPassword())) {
+                        return ResponseEntity.badRequest().body(Map.of("message", "Incorrect current password."));
+                    }
+                    
+                    employee.setPassword(encoder.encode(newPassword));
+                    employeeRepository.save(employee);
+                    return ResponseEntity.ok(Map.of("message", "Password updated successfully."));
+                })
+                .orElse(ResponseEntity.status(401).body(Map.of("message", "Employee not found.")));
+    }
+
     @PostMapping("/employees")
     public ResponseEntity<?> saveEmployee(@RequestBody Employee employee) {
 

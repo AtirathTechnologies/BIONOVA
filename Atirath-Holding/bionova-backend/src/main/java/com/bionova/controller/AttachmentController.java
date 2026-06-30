@@ -2,6 +2,7 @@ package com.bionova.controller;
 
 import com.bionova.entity.AttachmentMaster;
 import com.bionova.repository.AttachmentMasterRepository;
+import com.bionova.service.SupabaseStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,19 +11,32 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Attachment Controller — stores files for both Draft and Live tasks.
+ * Attachment Controller — stores file references (URLs) for Tasks, Milestones, and Projects.
  *
- * ── DRAFT TASK ────────────────────────────────────────────────────────
- * POST   /api/attachments/draft-task/{drftTaskId}   → add reference attachment to draft task
+ * ── IMPORTANT ───────────────────────────────────────────────────────────────
+ * Files are uploaded FIRST via StorageController (/api/storage/upload/...),
+ * which returns a public URL. That URL is then POSTed here to be stored in
+ * the attachments_master table linked to the entity.
+ *
+ * ── DRAFT TASK ────────────────────────────────────────────────────────────
+ * POST   /api/attachments/draft-task/{drftTaskId}   → add attachment record
  * GET    /api/attachments/draft-task/{drftTaskId}   → list draft task attachments
  *
- * ── LIVE TASK ─────────────────────────────────────────────────────────
- * POST   /api/attachments/live-task/{taskId}        → upload/attach file during live execution
+ * ── LIVE TASK ─────────────────────────────────────────────────────────────
+ * POST   /api/attachments/live-task/{taskId}        → add attachment record
  * GET    /api/attachments/live-task/{taskId}        → list live task attachments
  *
- * ── COMMON ────────────────────────────────────────────────────────────
+ * ── MILESTONE ─────────────────────────────────────────────────────────────
+ * POST   /api/attachments/milestone/{mId}           → add attachment to milestone
+ * GET    /api/attachments/milestone/{mId}           → list milestone attachments
+ *
+ * ── PROJECT ───────────────────────────────────────────────────────────────
+ * POST   /api/attachments/project/{prjId}           → add attachment to project
+ * GET    /api/attachments/project/{prjId}           → list project attachments
+ *
+ * ── COMMON ────────────────────────────────────────────────────────────────
  * GET    /api/attachments/{fileId}                  → get single attachment
- * DELETE /api/attachments/{fileId}                  → delete attachment
+ * DELETE /api/attachments/{fileId}                  → delete attachment record + file from Supabase
  */
 @RestController
 @RequestMapping("/api/attachments")
@@ -31,7 +45,10 @@ public class AttachmentController {
     @Autowired
     private AttachmentMasterRepository attachmentRepo;
 
-    // ── GET single ─────────────────────────────────────────────────────
+    @Autowired
+    private SupabaseStorageService storageService;
+
+    // ── GET single ─────────────────────────────────────────────────────────
 
     @GetMapping("/{fileId}")
     public ResponseEntity<AttachmentMaster> getById(@PathVariable Integer fileId) {
@@ -40,15 +57,18 @@ public class AttachmentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ── DRAFT TASK ──────────────────────────────────────────────────────
+    // ── DRAFT TASK ──────────────────────────────────────────────────────────
 
     /** List all attachments for a Draft Task */
     @GetMapping("/draft-task/{drftTaskId}")
     public List<AttachmentMaster> getDraftTaskAttachments(@PathVariable Long drftTaskId) {
+        List<AttachmentMaster> newStyle = attachmentRepo.findByDraftTaskId(drftTaskId);
+        if (!newStyle.isEmpty()) return newStyle;
+        // Fall back to legacy query for old records
         return attachmentRepo.findByTIdAndIsLive(drftTaskId, false);
     }
 
-    /** Add a reference attachment to a Draft Task (e.g. design doc, spec sheet) */
+    /** Add a reference attachment to a Draft Task */
     @PostMapping("/draft-task/{drftTaskId}")
     public ResponseEntity<?> addToDraftTask(
             @PathVariable Long drftTaskId,
@@ -57,23 +77,26 @@ public class AttachmentController {
         ResponseEntity<?> validation = validate(attachment);
         if (validation != null) return validation;
 
+        attachment.setRefId(drftTaskId);
+        attachment.setRefType("TASK_DRAFT");
+        // Legacy fields for backward compat
         attachment.setTId(drftTaskId);
         attachment.setIsLive(false);
         return ResponseEntity.ok(attachmentRepo.save(attachment));
     }
 
-    // ── LIVE TASK ───────────────────────────────────────────────────────
+    // ── LIVE TASK ───────────────────────────────────────────────────────────
 
     /** List all attachments for a Live Task */
     @GetMapping("/live-task/{taskId}")
     public List<AttachmentMaster> getLiveTaskAttachments(@PathVariable Long taskId) {
+        List<AttachmentMaster> newStyle = attachmentRepo.findByLiveTaskId(taskId);
+        if (!newStyle.isEmpty()) return newStyle;
+        // Fall back to legacy query for old records
         return attachmentRepo.findByTIdAndIsLive(taskId, true);
     }
 
-    /**
-     * Add an attachment to a Live Task.
-     * Used when the employee uploads evidence/output files during task execution.
-     */
+    /** Add an attachment to a Live Task */
     @PostMapping("/live-task/{taskId}")
     public ResponseEntity<?> addToLiveTask(
             @PathVariable Long taskId,
@@ -82,20 +105,85 @@ public class AttachmentController {
         ResponseEntity<?> validation = validate(attachment);
         if (validation != null) return validation;
 
+        attachment.setRefId(taskId);
+        attachment.setRefType("TASK_LIVE");
+        // Legacy fields for backward compat
         attachment.setTId(taskId);
         attachment.setIsLive(true);
         return ResponseEntity.ok(attachmentRepo.save(attachment));
     }
 
-    // ── DELETE ──────────────────────────────────────────────────────────
+    // ── MILESTONE ───────────────────────────────────────────────────────────
 
+    /** List all attachments for a Milestone */
+    @GetMapping("/milestone/{mId}")
+    public List<AttachmentMaster> getMilestoneAttachments(@PathVariable Long mId) {
+        return attachmentRepo.findByMilestoneId(mId);
+    }
+
+    /**
+     * Add a document attachment to a Milestone.
+     * The at_path should be a URL obtained from:
+     *   POST /api/storage/upload/attachment/milestone
+     */
+    @PostMapping("/milestone/{mId}")
+    public ResponseEntity<?> addToMilestone(
+            @PathVariable Long mId,
+            @RequestBody AttachmentMaster attachment) {
+
+        ResponseEntity<?> validation = validate(attachment);
+        if (validation != null) return validation;
+
+        attachment.setRefId(mId);
+        attachment.setRefType("MILESTONE_LIVE");
+        return ResponseEntity.ok(attachmentRepo.save(attachment));
+    }
+
+    // ── PROJECT ─────────────────────────────────────────────────────────────
+
+    /** List all attachments for a Project */
+    @GetMapping("/project/{prjId}")
+    public List<AttachmentMaster> getProjectAttachments(@PathVariable Long prjId) {
+        return attachmentRepo.findByProjectId(prjId);
+    }
+
+    /**
+     * Add a document attachment to a Project.
+     * The at_path should be a URL obtained from:
+     *   POST /api/storage/upload/attachment/project
+     */
+    @PostMapping("/project/{prjId}")
+    public ResponseEntity<?> addToProject(
+            @PathVariable Long prjId,
+            @RequestBody AttachmentMaster attachment) {
+
+        ResponseEntity<?> validation = validate(attachment);
+        if (validation != null) return validation;
+
+        attachment.setRefId(prjId);
+        attachment.setRefType("PROJECT_LIVE");
+        return ResponseEntity.ok(attachmentRepo.save(attachment));
+    }
+
+    // ── DELETE ──────────────────────────────────────────────────────────────
+
+    /**
+     * Delete an attachment record by fileId.
+     * Also deletes the actual file from Supabase Storage if at_type is 'UPLOAD'.
+     */
     @DeleteMapping("/{fileId}")
     public ResponseEntity<Void> delete(@PathVariable Integer fileId) {
-        attachmentRepo.deleteById(fileId);
+        attachmentRepo.findById(fileId).ifPresent(attachment -> {
+            // Delete actual file from Supabase Storage for uploaded files
+            if ("UPLOAD".equals(attachment.getAtType()) && attachment.getAtPath() != null) {
+                storageService.deleteFileByUrl(attachment.getAtPath());
+            }
+            attachmentRepo.deleteById(fileId);
+        });
         return ResponseEntity.ok().build();
     }
 
-    // ── Validation helper ───────────────────────────────────────────────
+    // ── Validation helper ───────────────────────────────────────────────────
 
     private ResponseEntity<?> validate(AttachmentMaster a) {
         if (a.getAtPath() == null || a.getAtPath().isBlank()) {

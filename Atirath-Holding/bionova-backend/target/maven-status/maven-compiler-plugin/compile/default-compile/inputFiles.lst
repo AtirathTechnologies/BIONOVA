@@ -31,6 +31,7 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\control
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\ProjectLiveController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\RbacController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\ReviewerMasterController.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\StorageController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\TaskDraftController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\TaskLiveController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\TestController.java
@@ -127,3 +128,4 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\ProjectPromotionService.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\ProjectStatusCascadeService.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\RbacService.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\service\SupabaseStorageService.java
