@@ -54,6 +54,9 @@ public class PlantMaster {
     @Column(name = "longt")
     private Double longt;
 
+    @Column(name="logo",length=255)
+    private String logo;
+
     @Column(name = "addl_rem", length = 255)
     private String addlRem;
 
