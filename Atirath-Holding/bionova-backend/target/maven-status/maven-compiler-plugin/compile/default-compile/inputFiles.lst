@@ -1,4 +1,5 @@
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\BionovaBackendApplication.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\DatabaseFixer.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\DataInitializer.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\SecurityConfig.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\config\SwaggerConfig.java
@@ -13,6 +14,7 @@ D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\control
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\CompanyController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\DepartmentController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\DeptCoyPltMapController.java
+D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\DesignationController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\EmployeeController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\EmployeeIndividualTaskController.java
 D:\git\BIONOVA\Atirath-Holding\bionova-backend\src\main\java\com\bionova\controller\EmployeeSettingsController.java
